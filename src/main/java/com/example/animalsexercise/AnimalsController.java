@@ -28,6 +28,11 @@ public class AnimalsController {
         return new Animal(createAnimal.getName(), createAnimal.getBinomialName());
     }
 
+    @GetMapping("/{id}")
+    public Animal get(@PathVariable("id") String id) {
+        return new Animal("Råtta", "Litus mumsis");
+    }
+
     @Value
     public static class CreateAnimal {
         String name;
