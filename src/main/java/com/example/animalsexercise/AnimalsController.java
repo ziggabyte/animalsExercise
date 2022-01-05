@@ -34,17 +34,22 @@ public class AnimalsController {
     }
 
     @PutMapping("/{id}")
-    public Animal update(@PathVariable("id") String id) {
-        return new Animal("Pingvin", "Snyggus frackus");
+    public Animal update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
+        return new Animal(updateAnimal.getName(), updateAnimal.getBinomialName());
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id) {
-
     }
 
     @Value
-    public static class CreateAnimal {
+    private static class CreateAnimal {
+        String name;
+        String binomialName;
+    }
+
+    @Value
+    private static class UpdateAnimal {
         String name;
         String binomialName;
     }
