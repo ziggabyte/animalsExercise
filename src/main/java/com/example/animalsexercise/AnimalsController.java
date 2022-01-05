@@ -38,6 +38,11 @@ public class AnimalsController {
         return new Animal("Pingvin", "Snyggus frackus");
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable("id") String id) {
+
+    }
+
     @Value
     public static class CreateAnimal {
         String name;
