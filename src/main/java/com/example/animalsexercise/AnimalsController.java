@@ -33,6 +33,11 @@ public class AnimalsController {
         return new Animal("Råtta", "Litus mumsis");
     }
 
+    @PutMapping("/{id}")
+    public Animal update(@PathVariable("id") String id) {
+        return new Animal("Pingvin", "Snyggus frackus");
+    }
+
     @Value
     public static class CreateAnimal {
         String name;
