@@ -1,20 +1,36 @@
 package com.example.animalsexercise;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.Value;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/animals")
 public class AnimalsController {
 
+    private List<Animal> animals;
+
+    public AnimalsController() {
+        this.animals = new ArrayList<>();
+        animals.add(new Animal("Lejon", "Storus hårus"));
+        animals.add(new Animal("Kråka", "Corvus corvus"));
+    }
+
     @GetMapping
     public List<Animal> all() {
-        return List.of(
-                new Animal("Lejon", "Storus hårus"),
-                new Animal("Kråka", "Corvus corvus")
-        );
+        return animals;
+    }
+
+    @PostMapping
+    public Animal create(@RequestBody CreateAnimal createAnimal) {
+        return new Animal(createAnimal.getName(), createAnimal.getBinomialName());
+    }
+
+    @Value
+    public static class CreateAnimal {
+        String name;
+        String binomialName;
     }
 }

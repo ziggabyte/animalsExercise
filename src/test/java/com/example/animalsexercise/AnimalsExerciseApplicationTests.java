@@ -19,7 +19,7 @@ class AnimalsExerciseApplicationTests {
     AnimalsController animalsController;
 
     @Test
-    void getAllTest() {
+    void getAllAnimalsTest() {
         List<Animal> animals = webTestClient.get()
                 .uri("/api/animals")
                 .exchange()
@@ -30,5 +30,4 @@ class AnimalsExerciseApplicationTests {
 
         assertEquals(2, animals.size());
     }
-
 }
