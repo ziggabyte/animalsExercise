@@ -2,7 +2,9 @@ package com.example.animalsexercise;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,20 +31,47 @@ public class AnimalsController {
     }
 
     @GetMapping("/{id}")
-    public AnimalDTO get(@PathVariable("id") String id) throws Exception {
-        return toDTO(animalService.get(id));
+    public AnimalDTO get(@PathVariable("id") String id) {
+        try {
+            return toDTO(animalService.get(id));
+        } catch (AnimalMissingException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Animal with id " + id + " not found",
+                    exception
+            );
+        }
     }
 
     @PutMapping("/{id}")
-    public AnimalDTO update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) throws Exception{
-        return toDTO(
-                animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName())
-        );
+    public AnimalDTO update(@PathVariable("id") String id,
+                            @RequestBody UpdateAnimal updateAnimal) {
+        try {
+            return toDTO(
+                    animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName())
+            );
+        } catch (AnimalMissingException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Animal with id " + id + " not found",
+                    exception
+            );
+        }
+
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id) throws Exception {
-        animalService.delete(id);
+    public void delete(@PathVariable("id") String id) {
+        try {
+            animalService.delete(id);
+        } catch (AnimalMissingException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Animal with id " + id + " not found",
+                    exception
+            );
+        }
+
     }
 
     private AnimalDTO toDTO(AnimalEntity animalEntity) {

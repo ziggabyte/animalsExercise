@@ -3,7 +3,6 @@ package com.example.animalsexercise;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
@@ -20,32 +19,26 @@ public class AnimalService {
         return animalRepository.save(animalEntity);
     }
 
-    public AnimalEntity get(String id) throws Exception {
-        Optional<AnimalEntity> optional = animalRepository.findById(id);
-        if (optional.isPresent()) {
-            return optional.get();
-        } else {
-            throw new Exception(id);
-        }
+    public AnimalEntity get(String id) throws AnimalMissingException {
+        return animalRepository
+                .findById(id)
+                .orElseThrow(() -> new AnimalMissingException(id));
     }
 
-    public AnimalEntity update(String id, String name, String binomialName) throws Exception {
-        Optional<AnimalEntity> optionalAnimalEntity = animalRepository.findById(id);
-        if (optionalAnimalEntity.isPresent()) {
-            optionalAnimalEntity.get().setName(name);
-            optionalAnimalEntity.get().setBinomialName(binomialName);
-            return animalRepository.save(optionalAnimalEntity.get());
-        } else {
-            throw new Exception(id);
-        }
+    public AnimalEntity update(String id, String name, String binomialName)
+            throws AnimalMissingException {
+        AnimalEntity animalEntity = animalRepository
+                .findById(id)
+                .orElseThrow(() -> new AnimalMissingException(id));
+        animalEntity.setName(name);
+        animalEntity.setBinomialName(binomialName);
+        return animalRepository.save(animalEntity);
     }
 
-    public void delete(String id) throws Exception {
-        Optional<AnimalEntity> optionalAnimalEntity = animalRepository.findById(id);
-        if (optionalAnimalEntity.isPresent()) {
-            animalRepository.delete(optionalAnimalEntity.get());
-        } else {
-            throw new Exception(id);
-        }
+    public void delete(String id) throws AnimalMissingException {
+        AnimalEntity animalEntity = animalRepository
+                .findById(id)
+                .orElseThrow(() -> new AnimalMissingException(id));
+        animalRepository.delete(animalEntity);
     }
 }
