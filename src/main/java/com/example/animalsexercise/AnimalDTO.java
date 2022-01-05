@@ -9,4 +9,5 @@ public class AnimalDTO {
     String id;
     String name;
     String binomialName;
+    String description;
 }

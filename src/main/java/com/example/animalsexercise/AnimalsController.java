@@ -71,14 +71,28 @@ public class AnimalsController {
                     exception
             );
         }
+    }
 
+    @GetMapping("/{remoteId}/{id}")
+    public AnimalDTO link(@PathVariable("id") String id,
+                     @PathVariable("remoteId") String remoteId) {
+        try {
+            return toDTO(animalService.link(id, remoteId));
+        } catch (AnimalMissingException exception) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Animal with id " + id + " not found",
+                    exception
+            );
+        }
     }
 
     private AnimalDTO toDTO(AnimalEntity animalEntity) {
         return new AnimalDTO(
                 animalEntity.getId(),
                 animalEntity.getName(),
-                animalEntity.getBinomialName()
+                animalEntity.getBinomialName(),
+                animalEntity.getDescription()
         );
     }
 

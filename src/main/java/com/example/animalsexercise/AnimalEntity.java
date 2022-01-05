@@ -18,6 +18,7 @@ public class AnimalEntity {
     @Id  String id;
     String name;
     String binomialName;
+    String description;
 
     public AnimalEntity(String name, String binomialName) {
         this.id = UUID.randomUUID().toString();

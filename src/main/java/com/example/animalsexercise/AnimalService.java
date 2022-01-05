@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class AnimalService {
     AnimalRepository animalRepository;
+    JsonPlaceholderRemote jsonPlaceholderRemote;
 
     public Stream<AnimalEntity> all() {
         return animalRepository.findAll().stream();
@@ -40,5 +41,12 @@ public class AnimalService {
                 .findById(id)
                 .orElseThrow(() -> new AnimalMissingException(id));
         animalRepository.delete(animalEntity);
+    }
+
+    public AnimalEntity link(String id, String remoteId) throws AnimalMissingException {
+        JsonPlaceholderPost post = jsonPlaceholderRemote.apiCall(remoteId);
+        AnimalEntity animal = get(id);
+        animal.setDescription(post.getBody());
+        return animal;
     }
 }
