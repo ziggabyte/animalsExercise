@@ -1,45 +1,51 @@
 package com.example.animalsexercise;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
+@AllArgsConstructor
 public class AnimalService {
-
-    Map<String, AnimalEntity> animals;
-
-    public AnimalService () {
-        this.animals = new HashMap<>();
-        AnimalEntity lejon = new AnimalEntity("Lejon", "Storus hårus");
-        AnimalEntity pingvin = new AnimalEntity("Pingvin", "Flappus armus");
-        animals.put(lejon.getId(), lejon);
-        animals.put(pingvin.getId(), pingvin);
-    }
+    AnimalRepository animalRepository;
 
     public Stream<AnimalEntity> all() {
-        return animals.values().stream();
+        return animalRepository.findAll().stream();
     }
 
     public AnimalEntity create(String name, String binomialName) {
         AnimalEntity animalEntity = new AnimalEntity(name, binomialName);
-        animals.put(animalEntity.getId(), animalEntity);
-        return animalEntity;
+        return animalRepository.save(animalEntity);
     }
 
-    public AnimalEntity get(String id) {
-        return animals.get(id);
+    public AnimalEntity get(String id) throws Exception {
+        Optional<AnimalEntity> optional = animalRepository.findById(id);
+        if (optional.isPresent()) {
+            return optional.get();
+        } else {
+            throw new Exception(id);
+        }
     }
 
-    public AnimalEntity update(String id, String name, String binomialName) {
-        get(id).setName(name);
-        get(id).setBinomialName(binomialName);
-        return get(id);
+    public AnimalEntity update(String id, String name, String binomialName) throws Exception {
+        Optional<AnimalEntity> optionalAnimalEntity = animalRepository.findById(id);
+        if (optionalAnimalEntity.isPresent()) {
+            optionalAnimalEntity.get().setName(name);
+            optionalAnimalEntity.get().setBinomialName(binomialName);
+            return animalRepository.save(optionalAnimalEntity.get());
+        } else {
+            throw new Exception(id);
+        }
     }
 
-    public void delete(String id) {
-        animals.remove(id);
+    public void delete(String id) throws Exception {
+        Optional<AnimalEntity> optionalAnimalEntity = animalRepository.findById(id);
+        if (optionalAnimalEntity.isPresent()) {
+            animalRepository.delete(optionalAnimalEntity.get());
+        } else {
+            throw new Exception(id);
+        }
     }
 }

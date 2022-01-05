@@ -15,38 +15,38 @@ public class AnimalsController {
     AnimalService animalService;
 
     @GetMapping
-    public List<Animal> all() {
+    public List<AnimalDTO> all() {
         return animalService.all()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
     @PostMapping
-    public Animal create(@RequestBody CreateAnimal createAnimal) {
+    public AnimalDTO create(@RequestBody CreateAnimal createAnimal) {
         return toDTO(
                 animalService.create(createAnimal.getName(), createAnimal.getBinomialName())
         );
     }
 
     @GetMapping("/{id}")
-    public Animal get(@PathVariable("id") String id) {
+    public AnimalDTO get(@PathVariable("id") String id) throws Exception {
         return toDTO(animalService.get(id));
     }
 
     @PutMapping("/{id}")
-    public Animal update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
+    public AnimalDTO update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) throws Exception{
         return toDTO(
                 animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName())
         );
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") String id) {
+    public void delete(@PathVariable("id") String id) throws Exception {
         animalService.delete(id);
     }
 
-    private Animal toDTO(AnimalEntity animalEntity) {
-        return new Animal(
+    private AnimalDTO toDTO(AnimalEntity animalEntity) {
+        return new AnimalDTO(
                 animalEntity.getId(),
                 animalEntity.getName(),
                 animalEntity.getBinomialName()
