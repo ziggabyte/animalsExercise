@@ -1,45 +1,56 @@
 package com.example.animalsexercise;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/animals")
+@AllArgsConstructor
 public class AnimalsController {
 
-    private List<Animal> animals;
-
-    public AnimalsController() {
-        this.animals = new ArrayList<>();
-        animals.add(new Animal("Lejon", "Storus hårus"));
-        animals.add(new Animal("Kråka", "Corvus corvus"));
-    }
+    AnimalService animalService;
 
     @GetMapping
     public List<Animal> all() {
-        return animals;
+        return animalService.all()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
     @PostMapping
     public Animal create(@RequestBody CreateAnimal createAnimal) {
-        return new Animal(createAnimal.getName(), createAnimal.getBinomialName());
+        return toDTO(
+                animalService.create(createAnimal.getName(), createAnimal.getBinomialName())
+        );
     }
 
     @GetMapping("/{id}")
     public Animal get(@PathVariable("id") String id) {
-        return new Animal("Råtta", "Litus mumsis");
+        return toDTO(animalService.get(id));
     }
 
     @PutMapping("/{id}")
     public Animal update(@PathVariable("id") String id, @RequestBody UpdateAnimal updateAnimal) {
-        return new Animal(updateAnimal.getName(), updateAnimal.getBinomialName());
+        return toDTO(
+                animalService.update(id, updateAnimal.getName(), updateAnimal.getBinomialName())
+        );
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") String id) {
+        animalService.delete(id);
+    }
+
+    private Animal toDTO(AnimalEntity animalEntity) {
+        return new Animal(
+                animalEntity.getId(),
+                animalEntity.getName(),
+                animalEntity.getBinomialName()
+        );
     }
 
     @Value
